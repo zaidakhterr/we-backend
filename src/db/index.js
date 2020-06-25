@@ -23,22 +23,20 @@ const wrapResponse = (jsonData, statusCode = 200, error = null) => {
 };
 
 const generateJWT = async user => {
-  return new Promise((resolve, reject) => {
-    try {
-      let token = jwt.sign(
-        {
-          id: user.id,
-          fullname: user.fullname,
-          email: user.email,
-        },
-        JWTSecret,
-        { expiresIn: 60 * 60 * 24 * 365 }
-      );
-      resolve(token);
-    } catch (error) {
-      reject(error);
-    }
-  });
+  try {
+    let token = jwt.sign(
+      {
+        id: user.id,
+        fullname: user.fullname,
+        email: user.email,
+      },
+      JWTSecret,
+      { expiresIn: 60 * 60 * 24 * 365 }
+    );
+    return token;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const get = async (table, field1, value1, field2, value2) => {
@@ -56,9 +54,9 @@ const get = async (table, field1, value1, field2, value2) => {
   try {
     let results = await db.query(sql, params);
     await db.end();
-    return { results };
+    return results;
   } catch (error) {
-    return { error };
+    throw error;
   }
 };
 
@@ -81,14 +79,15 @@ const addUser = async data => {
       "SELECT * FROM users WHERE id=(SELECT LAST_INSERT_ID())"
     );
     await db.end();
-    return { results: results[0] };
+    return results[0];
   } catch (error) {
-    return { error };
+    throw error;
   }
 };
 
 module.exports = {
   wrapResponse,
+  generateJWT,
   get,
   addUser,
 };
