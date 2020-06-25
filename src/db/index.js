@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 
 const db = require("serverless-mysql")(dbConfig);
 
-const wrapResponse = (jsonData, statusCode = 200, error = null) => {
+const wrapResponse = (jsonData, statusCode = 200, error = undefined) => {
   let response = {
     statusCode,
     headers: {
@@ -36,6 +36,21 @@ const generateJWT = async user => {
     return token;
   } catch (error) {
     throw error;
+  }
+};
+
+const verifyJWT = event => {
+  let token = event.headers.Authorization
+    ? event.headers.Authorization.replace("Bearer ", "")
+    : null;
+
+  if (!token) return [false, undefined];
+
+  try {
+    const decodedUser = jwt.verify(token);
+    return [true, decodedUser];
+  } catch (error) {
+    return [false, undefined];
   }
 };
 
@@ -88,6 +103,7 @@ const addUser = async data => {
 module.exports = {
   wrapResponse,
   generateJWT,
+  verifyJWT,
   get,
   addUser,
 };
