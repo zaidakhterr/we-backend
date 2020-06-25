@@ -19,10 +19,16 @@
     "webpack": "^4.35.2",
     "serverless-offline": "^6.4.0",
     "serverless": "^1.73.1",
-    "serverless-plugin-existing-s3": "^2.4.0"
+    "serverless-plugin-existing-s3": "^2.4.0",
+    "prettier": "^2.0.5",
+    "eslint": "^7.2.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.639.0"
+    "aws-sdk": "^2.639.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.27.0",
+    "serverless-mysql": "^1.5.4"
   },
   "bugs": {
     "url": "https://github.com/zenveus/sls-template/issues"
