@@ -1,13 +1,19 @@
 {
   "env": {
-    "node": true
+    "node": true,
+    "es6": true
   },
-  "extends": ["eslint:recommended"],
   "parserOptions": {
-    "ecmaVersion": 7,
+    "ecmaVersion": 10,
     "sourceType": "module"
   },
   "rules": {
-    "camelcase": "warn"
+    "camelcase": "warn",
+    "semi": ["warn", "always"],
+    "quotes": ["warn", "double"],
+    "no-unused-vars": "warn",
+    "default-case": "warn",
+    "no-var": "warn",
+    "no-undef": "error"
   }
 }

@@ -1,8 +1,10 @@
-async function hello(event, context) {
+const hello = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({ message: "Hello World" }),
   };
-}
+};
 
-export const { hello };
+module.exports = {
+  hello,
+};
