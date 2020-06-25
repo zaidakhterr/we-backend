@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 
 const db = require("serverless-mysql")(dbConfig);
 
+// Wrap the result of all handlers with this function
 const wrapResponse = (jsonData, statusCode = 200, error = undefined) => {
   let response = {
     statusCode,
@@ -22,6 +23,8 @@ const wrapResponse = (jsonData, statusCode = 200, error = undefined) => {
   return response;
 };
 
+// Generate Json Web Token
+// returns: token or throws error
 const generateJWT = async user => {
   try {
     let token = jwt.sign(
@@ -39,6 +42,8 @@ const generateJWT = async user => {
   }
 };
 
+// Verify Json Web Token
+// returns: An array, [isVerified, decodedUser]
 const verifyJWT = event => {
   let token = event.headers.Authorization
     ? event.headers.Authorization.replace("Bearer ", "")
@@ -54,6 +59,8 @@ const verifyJWT = event => {
   }
 };
 
+// Get results from any table. Can quey with 1 or 2 fields
+// returns: array of results or throws error
 const get = async (table, field1, value1, field2, value2) => {
   let sql = "";
   let params = [];
@@ -75,6 +82,8 @@ const get = async (table, field1, value1, field2, value2) => {
   }
 };
 
+// Insert user to the users table
+// returns: Object of the user inserted or throws error
 const addUser = async data => {
   let sql = `
   INSERT INTO users (fullname, email, password, created_at, updated_at)
