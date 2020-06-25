@@ -4,6 +4,21 @@ const bcrypt = require("bcryptjs");
 
 const db = require("serverless-mysql")(dbConfig);
 
+const wrapResponse = function (jsonData, statusCode = 200, error = null) {
+  let response = {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+      "Access-Control-Allow-Methods": "*",
+    },
+    body: JSON.stringify({ ...jsonData, error }),
+  };
+  return response;
+};
+
 const get = async (table, field1, value1, field2, value2) => {
   let sql = "";
   let params = [];
