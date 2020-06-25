@@ -1,10 +1,13 @@
 const dbConfig = require("../config/db_config");
+const JWTSecret = require("../config").JWT_SECRET;
+
+const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const bcrypt = require("bcryptjs");
 
 const db = require("serverless-mysql")(dbConfig);
 
-const wrapResponse = function (jsonData, statusCode = 200, error = null) {
+const wrapResponse = (jsonData, statusCode = 200, error = null) => {
   let response = {
     statusCode,
     headers: {
@@ -17,6 +20,25 @@ const wrapResponse = function (jsonData, statusCode = 200, error = null) {
     body: JSON.stringify({ ...jsonData, error }),
   };
   return response;
+};
+
+const generateJWT = async user => {
+  return new Promise((resolve, reject) => {
+    try {
+      let token = jwt.sign(
+        {
+          id: user.id,
+          fullname: user.fullname,
+          email: user.email,
+        },
+        JWTSecret,
+        { expiresIn: 60 * 60 * 24 * 365 }
+      );
+      resolve(token);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 
 const get = async (table, field1, value1, field2, value2) => {
@@ -66,6 +88,7 @@ const addUser = async data => {
 };
 
 module.exports = {
+  wrapResponse,
   get,
   addUser,
 };
