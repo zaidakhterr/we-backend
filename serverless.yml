@@ -2,14 +2,27 @@ service:
   name: we-backend
 
 plugins:
+  - serverless-plugin-existing-s3
+  - serverless-offline
   - serverless-bundle
   - serverless-pseudo-parameters
 
+custom:
+  serverless-offline:
+    httpPort: 4000
+
 provider:
   name: aws
+  profile: nedian
+  region: ap-south-1
   runtime: nodejs12.x
   memorySize: 256
   stage: ${opt:stage, 'dev'}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "arn:aws:s3:::we-project"
 
 functions:
   hello:
