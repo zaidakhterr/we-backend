@@ -66,11 +66,12 @@ async function verifyJWT(event) {
     return [false, undefined];
   }
 }
-
+// Verify Password
+// returns: A boolean specifying if password is verified or not
 async function verifyPassword(password, hash) {
   try {
-    const res = await bcrypt.compare(password, hash);
-    return res;
+    const verified = await bcrypt.compare(password, hash);
+    return verified;
   } catch (error) {
     throw error;
   }
