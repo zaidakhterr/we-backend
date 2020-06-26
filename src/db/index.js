@@ -33,7 +33,7 @@ function wrapResponse(jsonData = null, statusCode = 200, error = undefined) {
 
 // Generate Json Web Token
 // returns: token or throws error
-async function generateJWT(user) {
+async function _generateJWT(user) {
   try {
     let token = jwt.sign(
       {
@@ -52,7 +52,7 @@ async function generateJWT(user) {
 
 // Verify Json Web Token
 // returns: An array, [isVerified, decodedUser]
-async function verifyJWT(event) {
+async function _verifyJWT(event) {
   let token = event.headers.Authorization
     ? event.headers.Authorization.replace("Bearer ", "")
     : null;
@@ -68,7 +68,7 @@ async function verifyJWT(event) {
 }
 // Verify Password
 // returns: A boolean specifying if password is verified or not
-async function verifyPassword(password, hash) {
+async function _verifyPassword(password, hash) {
   try {
     const verified = await bcrypt.compare(password, hash);
     return verified;
@@ -79,7 +79,7 @@ async function verifyPassword(password, hash) {
 
 // Get results from any table. Can quey with 1 or 2 fields
 // returns: array of results or throws error
-async function get(table, field1, value1, field2, value2) {
+async function _get(table, field1, value1, field2, value2) {
   let sql = "";
   let params = [];
 
@@ -101,7 +101,7 @@ async function get(table, field1, value1, field2, value2) {
 }
 
 // Delete any entry from the DB. Works similarly as get()
-async function remove(table, field1, value1, field2, value2) {
+async function _delete(table, field1, value1, field2, value2) {
   let sql = "";
   let params = [];
 
@@ -124,7 +124,7 @@ async function remove(table, field1, value1, field2, value2) {
 
 // Insert user to the users table
 // returns: Object of the user inserted or throws error
-async function addUser(data) {
+async function _addUser(data) {
   let sql = `
   INSERT INTO users (fullname, email, password, created_at, updated_at)
   VALUES(?, ?, ?, ?, ?);
@@ -151,12 +151,37 @@ async function addUser(data) {
   }
 }
 
+async function _updateUser(id, data) {
+  console.log(data);
+  let sql =
+    "UPDATE users SET fullname = ?, email = ?, image = ?, description = ?, updated_at = ? WHERE id = ?";
+  let params = [
+    data.fullname,
+    data.email,
+    data.image,
+    data.description,
+    moment().format(),
+    id,
+  ];
+
+  try {
+    await db.query(sql, params);
+    await db.end();
+
+    let updatedUser = await _get("users", "id", id);
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export {
   wrapResponse,
-  generateJWT,
-  verifyJWT,
-  verifyPassword,
-  get,
-  remove,
-  addUser,
+  _generateJWT,
+  _verifyJWT,
+  _verifyPassword,
+  _get,
+  _delete,
+  _addUser,
+  _updateUser,
 };

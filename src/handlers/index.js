@@ -1,11 +1,12 @@
 const {
   wrapResponse,
-  generateJWT,
-  verifyJWT,
-  verifyPassword,
-  get,
-  remove,
-  addUser,
+  _generateJWT,
+  _verifyJWT,
+  _verifyPassword,
+  _get,
+  _delete,
+  _addUser,
+  _updateUser,
 } = require("../db");
 
 // Dummy handler
@@ -30,8 +31,8 @@ async function register(event) {
   }
 
   try {
-    let user = await addUser({ fullname, email, password });
-    let token = await generateJWT(user);
+    let user = await _addUser({ fullname, email, password });
+    let token = await _generateJWT(user);
     return wrapResponse({ user, token });
   } catch (error) {
     return wrapResponse(null, 500, error);
@@ -50,16 +51,16 @@ async function login(event) {
   }
 
   try {
-    let user = await get("users", "email", email);
+    let user = await _get("users", "email", email);
     if (user.length === 0) {
       return wrapResponse(null, 400, {
         message: "Not found. User does not exist.",
       });
     }
 
-    let verified = await verifyPassword(password, user[0].password);
+    let verified = await _verifyPassword(password, user[0].password);
     if (verified) {
-      let token = await generateJWT(user[0]);
+      let token = await _generateJWT(user[0]);
       return wrapResponse({ user: user[0], token });
     }
 
@@ -88,7 +89,7 @@ async function getUser(event) {
   const { id } = queryParams;
 
   try {
-    let user = await get("users", "id", id);
+    let user = await _get("users", "id", id);
     if (user.length === 0) {
       return wrapResponse(null, 400, {
         message: "Not Found. User does not exist.",
@@ -111,17 +112,39 @@ async function getUser(event) {
 // DELETE user
 async function deleteUser(event) {
   try {
-    const [verified, decodedUser] = await verifyJWT(event);
+    const [verified, decodedUser] = await _verifyJWT(event);
 
     if (!verified) {
-      return wrapResponse(null, 401, { message: "Unauthorized. Token Error." });
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
     }
 
-    let result = await remove("users", "id", decodedUser.id);
+    let result = await _delete("users", "id", decodedUser.id);
     return wrapResponse(result);
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
 }
 
-export { hello, register, login, getUser, deleteUser };
+// UPDATE user
+async function updateUser(event) {
+  const data = JSON.parse(event.body);
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _updateUser(decodedUser.id, data);
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+export { hello, register, login, getUser, deleteUser, updateUser };

@@ -55,3 +55,9 @@ functions:
       - http:
           method: DELETE
           path: user
+  updateUser:
+    handler: src/handlers/index.updateUser
+    events:
+      - http:
+          method: PUT
+          path: user
