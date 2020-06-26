@@ -54,6 +54,10 @@ To login a user
 }
 ```
 
-### #. GET /login?id=[id]
+### 3. GET /user?id=[id]
 
 To get the user information
+
+### 4. DELETE /user
+
+Delete user
