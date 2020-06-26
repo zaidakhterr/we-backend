@@ -2,7 +2,16 @@
 
 Backend for the we-project (aka. NEDian's Forum)
 
-## API Endpoints
+## ⚙ Setup:
+
+1. Make a folder `/src/config`
+2. Add `index.js` and `db_config.js`
+3. Run `npm install`
+4. Configure AWS
+5. Run `sls offline` to run locally.
+6. Run `sls deploy` to deploy to AWS.
+
+## ⚡ API Endpoints:
 
 ### 1. POST /register
 
