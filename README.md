@@ -29,13 +29,26 @@ All response will be of similar structure as below:
 
 ### 1. POST /register
 
-To register a user
+To register a user. Also logs the user in.
 
 #### Request Body:
 
 ```json
 {
   "fullname": "[full_name]",
+  "email": "[email_address]",
+  "password": "[password]"
+}
+```
+
+### 2. POST /login
+
+To login a user
+
+#### Request Body:
+
+```json
+{
   "email": "[email_address]",
   "password": "[password]"
 }
