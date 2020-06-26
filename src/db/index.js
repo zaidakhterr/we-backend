@@ -60,7 +60,7 @@ async function verifyJWT(event) {
   if (!token) return [false, undefined];
 
   try {
-    const decodedUser = jwt.verify(token);
+    const decodedUser = jwt.verify(token, JWTSecret);
     return [true, decodedUser];
   } catch (error) {
     return [false, undefined];
@@ -88,6 +88,28 @@ async function get(table, field1, value1, field2, value2) {
     params = [value1, value2];
   } else {
     sql = `SELECT * FROM ${table} WHERE is_deleted = 0 AND ${field1} = ?`;
+    params = [value1];
+  }
+
+  try {
+    let results = await db.query(sql, params);
+    await db.end();
+    return results;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Delete any entry(i.e. set is_deleted = 1) from the DB. Works similarly as get()
+async function setIsDeleted(table, field1, value1, field2, value2) {
+  let sql = "";
+  let params = [];
+
+  if (field2 && value2) {
+    sql = `UPDATE ${table} SET is_deleted = 1 WHERE ${field1} = ? AND ${field2} = ?`;
+    params = [value1, value2];
+  } else {
+    sql = `UPDATE ${table} SET is_deleted = 1 WHERE ${field1} = ?`;
     params = [value1];
   }
 
@@ -129,4 +151,12 @@ async function addUser(data) {
   }
 }
 
-export { wrapResponse, generateJWT, verifyJWT, verifyPassword, get, addUser };
+export {
+  wrapResponse,
+  generateJWT,
+  verifyJWT,
+  verifyPassword,
+  get,
+  setIsDeleted,
+  addUser,
+};

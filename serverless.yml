@@ -43,9 +43,15 @@ functions:
       - http:
           method: POST
           path: login
-  user:
+  getUser:
     handler: src/handlers/index.getUser
     events:
       - http:
           method: GET
+          path: user
+  deleteUser:
+    handler: src/handlers/index.deleteUser
+    events:
+      - http:
+          method: DELETE
           path: user

@@ -4,6 +4,7 @@ const {
   verifyJWT,
   verifyPassword,
   get,
+  setIsDeleted,
   addUser,
 } = require("../db");
 
@@ -50,6 +51,12 @@ async function login(event) {
 
   try {
     let user = await get("users", "email", email);
+    if (user.length === 0) {
+      return wrapResponse(null, 400, {
+        message: "Not found. User does not exist.",
+      });
+    }
+
     let verified = await verifyPassword(password, user[0].password);
     if (verified) {
       let token = await generateJWT(user[0]);
@@ -87,10 +94,34 @@ async function getUser(event) {
         message: "Not Found. User does not exist.",
       });
     }
-    return wrapResponse({ user: user[0] });
+
+    let userObj = {
+      email: user[0].email,
+      fullname: user[0].fullname,
+      image: user[0].image,
+      description: user[0].description,
+    };
+
+    return wrapResponse({ user: userObj });
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
 }
 
-export { hello, register, login, getUser };
+// DELETE user
+async function deleteUser(event) {
+  try {
+    const [verified, decodedUser] = await verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, { message: "Unauthorized. Token Error." });
+    }
+
+    let result = await setIsDeleted("users", "id", decodedUser.id);
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+export { hello, register, login, getUser, deleteUser };
