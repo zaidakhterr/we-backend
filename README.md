@@ -53,3 +53,7 @@ To login a user
   "password": "[password]"
 }
 ```
+
+### #. GET /login?id=[id]
+
+To get the user information
