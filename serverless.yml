@@ -31,3 +31,9 @@ functions:
       - http:
           method: GET
           path: hello
+  register:
+    handler: src/handlers/index.register
+    events:
+      - http:
+          method: POST
+          path: register

@@ -1,14 +1,18 @@
-const dbConfig = require("../config/db_config");
-const JWTSecret = require("../config").JWT_SECRET;
+const dbConfig = require("../config/db_config").dbConfig;
+const JWTSecret = require("../config").keys.JWT_SECRET;
 
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const bcrypt = require("bcryptjs");
 
-const db = require("serverless-mysql")(dbConfig);
+const db = require("serverless-mysql")({ config: dbConfig });
 
 // Wrap the result of all handlers with this function
-function wrapResponse(jsonData = null, statusCode = 200, error = null) {
+function wrapResponse(jsonData = null, statusCode = 200, error = undefined) {
+  if (error) {
+    console.log("ERROR ===>>>", error);
+  }
+
   let response = {
     statusCode,
     headers: {
@@ -19,7 +23,7 @@ function wrapResponse(jsonData = null, statusCode = 200, error = null) {
       "Access-Control-Allow-Methods": "*",
     },
     body: JSON.stringify({
-      status: error ? false : true,
+      status: error === undefined,
       result: { ...jsonData },
       error,
     }),
@@ -110,6 +114,7 @@ async function addUser(data) {
     await db.end();
     return results[0];
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }

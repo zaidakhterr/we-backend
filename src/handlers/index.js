@@ -7,17 +7,17 @@ async function hello(event, context) {
 }
 
 // Register handler
-async function register(event, context) {
+async function register(event) {
   const data = JSON.parse(event.body);
   const { fullname, email, password } = data;
 
   try {
-    let user = addUser({ fullname, email, password });
-    let token = generateJWT(user);
+    let user = await addUser({ fullname, email, password });
+    let token = await generateJWT(user);
     return wrapResponse({ user, token });
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
 }
 
-export { hello };
+export { hello, register };
