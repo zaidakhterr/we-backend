@@ -84,10 +84,10 @@ async function get(table, field1, value1, field2, value2) {
   let params = [];
 
   if (field2 && value2) {
-    sql = `SELECT * FROM ${table} WHERE is_deleted = 0 AND ${field1} = ? AND ${field2} = ?`;
+    sql = `SELECT * FROM ${table} WHERE ${field1} = ? AND ${field2} = ?`;
     params = [value1, value2];
   } else {
-    sql = `SELECT * FROM ${table} WHERE is_deleted = 0 AND ${field1} = ?`;
+    sql = `SELECT * FROM ${table} WHERE ${field1} = ?`;
     params = [value1];
   }
 
@@ -100,16 +100,16 @@ async function get(table, field1, value1, field2, value2) {
   }
 }
 
-// Delete any entry(i.e. set is_deleted = 1) from the DB. Works similarly as get()
-async function setIsDeleted(table, field1, value1, field2, value2) {
+// Delete any entry from the DB. Works similarly as get()
+async function remove(table, field1, value1, field2, value2) {
   let sql = "";
   let params = [];
 
   if (field2 && value2) {
-    sql = `UPDATE ${table} SET is_deleted = 1 WHERE ${field1} = ? AND ${field2} = ?`;
+    sql = `DELETE FROM ${table} WHERE ${field1} = ? AND ${field2} = ?`;
     params = [value1, value2];
   } else {
-    sql = `UPDATE ${table} SET is_deleted = 1 WHERE ${field1} = ?`;
+    sql = `DELETE FROM ${table} WHERE ${field1} = ?`;
     params = [value1];
   }
 
@@ -157,6 +157,6 @@ export {
   verifyJWT,
   verifyPassword,
   get,
-  setIsDeleted,
+  remove,
   addUser,
 };

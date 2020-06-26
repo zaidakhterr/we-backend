@@ -4,7 +4,7 @@ const {
   verifyJWT,
   verifyPassword,
   get,
-  setIsDeleted,
+  remove,
   addUser,
 } = require("../db");
 
@@ -117,7 +117,7 @@ async function deleteUser(event) {
       return wrapResponse(null, 401, { message: "Unauthorized. Token Error." });
     }
 
-    let result = await setIsDeleted("users", "id", decodedUser.id);
+    let result = await remove("users", "id", decodedUser.id);
     return wrapResponse(result);
   } catch (error) {
     return wrapResponse(null, 500, error);
