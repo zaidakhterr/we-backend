@@ -13,6 +13,20 @@ Backend for the we-project (aka. NEDian's Forum)
 
 ## ⚡ API Endpoints:
 
+All response will be of similar structure as below:
+
+```json
+{
+  "status": "[boolean]",
+  "result": "[result_object]",
+  "error": "[error_object]"
+}
+```
+
+- The `result_object` will vary.
+- `status` will be _true_ if request succeeds, _false_ otherwise.
+- `error_object` will contain the error, if any.
+
 ### 1. POST /register
 
 To register a user
@@ -24,15 +38,5 @@ To register a user
   "fullname": "[full_name]",
   "email": "[email_address]",
   "password": "[password]"
-}
-```
-
-#### Response:
-
-```json
-{
-  "status": "[boolean]",
-  "result": "[result_object]",
-  "error": "[error_object]"
 }
 ```
