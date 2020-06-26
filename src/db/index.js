@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs");
 const db = require("serverless-mysql")(dbConfig);
 
 // Wrap the result of all handlers with this function
-const wrapResponse = (jsonData, statusCode = 200, error = undefined) => {
+function wrapResponse(jsonData = null, statusCode = 200, error = null) {
   let response = {
     statusCode,
     headers: {
@@ -18,14 +18,18 @@ const wrapResponse = (jsonData, statusCode = 200, error = undefined) => {
       "Access-Control-Allow-Credentials": true,
       "Access-Control-Allow-Methods": "*",
     },
-    body: JSON.stringify({ ...jsonData, error }),
+    body: JSON.stringify({
+      status: error ? false : true,
+      result: { ...jsonData },
+      error,
+    }),
   };
   return response;
-};
+}
 
 // Generate Json Web Token
 // returns: token or throws error
-const generateJWT = async user => {
+async function generateJWT(user) {
   try {
     let token = jwt.sign(
       {
@@ -40,11 +44,11 @@ const generateJWT = async user => {
   } catch (error) {
     throw error;
   }
-};
+}
 
 // Verify Json Web Token
 // returns: An array, [isVerified, decodedUser]
-const verifyJWT = event => {
+async function verifyJWT(event) {
   let token = event.headers.Authorization
     ? event.headers.Authorization.replace("Bearer ", "")
     : null;
@@ -57,11 +61,11 @@ const verifyJWT = event => {
   } catch (error) {
     return [false, undefined];
   }
-};
+}
 
 // Get results from any table. Can quey with 1 or 2 fields
 // returns: array of results or throws error
-const get = async (table, field1, value1, field2, value2) => {
+async function get(table, field1, value1, field2, value2) {
   let sql = "";
   let params = [];
 
@@ -80,17 +84,18 @@ const get = async (table, field1, value1, field2, value2) => {
   } catch (error) {
     throw error;
   }
-};
+}
 
 // Insert user to the users table
 // returns: Object of the user inserted or throws error
-const addUser = async data => {
+async function addUser(data) {
   let sql = `
   INSERT INTO users (fullname, email, password, created_at, updated_at)
   VALUES(?, ?, ?, ?, ?);
   `;
 
   let presentDate = moment().format("DD-MM-YYYY HH:mm:ss");
+
   const hash = await bcrypt.hash(data.password, 8);
 
   let params = [data.fullname, data.email, hash, presentDate, presentDate];
@@ -107,12 +112,6 @@ const addUser = async data => {
   } catch (error) {
     throw error;
   }
-};
+}
 
-module.exports = {
-  wrapResponse,
-  generateJWT,
-  verifyJWT,
-  get,
-  addUser,
-};
+export { wrapResponse, generateJWT, verifyJWT, get, addUser };
