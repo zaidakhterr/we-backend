@@ -1,16 +1,29 @@
-# zenveus.com: Serverless Framework Template
+# WE-BACKEND
 
-http://zenveus.com
+Backend for the we-project (aka. NEDian's Forum)
 
-## Why this template
+## API Endpoints
 
-- [serverless-pseudo-parameters plugin](https://www.npmjs.com/package/serverless-pseudo-parameters): Allows you to take benefit of CloudFormation Pseudo Parameters.
-- [serverless-bundle plugin](https://www.npmjs.com/package/serverless-pseudo-parameters): Bundler based on the serverless-webpack plugin - zero configuration required while being fully compatible with ES6/ES7 features.
+### 1. POST /register
 
-## Getting started
+To register a user
 
+#### Request Body:
+
+```json
+{
+  "fullname": "[full_name]",
+  "email": "[email_address]",
+  "password": "[password]"
+}
 ```
-sls create --name YOUR_PROJECT_NAME --template-url https://github.com/zenveus/sls-template
-cd YOUR_PROJECT_NAME
-npm install
+
+#### Response:
+
+```json
+{
+  "status": "[boolean]",
+  "result": "[result_object]",
+  "error": "[error_object]"
+}
 ```
