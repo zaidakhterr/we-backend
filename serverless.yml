@@ -37,3 +37,9 @@ functions:
       - http:
           method: POST
           path: register
+  login:
+    handler: src/handlers/index.login
+    events:
+      - http:
+          method: POST
+          path: login

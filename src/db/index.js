@@ -67,6 +67,15 @@ async function verifyJWT(event) {
   }
 }
 
+async function verifyPassword(password, hash) {
+  try {
+    const res = await bcrypt.compare(password, hash);
+    return res;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Get results from any table. Can quey with 1 or 2 fields
 // returns: array of results or throws error
 async function get(table, field1, value1, field2, value2) {
@@ -119,4 +128,4 @@ async function addUser(data) {
   }
 }
 
-export { wrapResponse, generateJWT, verifyJWT, get, addUser };
+export { wrapResponse, generateJWT, verifyJWT, verifyPassword, get, addUser };
