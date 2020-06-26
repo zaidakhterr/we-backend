@@ -44,7 +44,7 @@ functions:
           method: POST
           path: login
   user:
-    handler: src/handlers/index.user
+    handler: src/handlers/index.getUser
     events:
       - http:
           method: GET

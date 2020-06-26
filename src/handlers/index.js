@@ -13,33 +13,11 @@ async function hello(event, context) {
   return wrapResponse({ status: true, message: "Hello World" });
 }
 
-// User handler
-// GET user with id
-async function user(event) {
-  const queryParams = event.queryStringParameters;
+// *************
+// AUTH HANDLERS
+// *************
 
-  if (!queryParams || !queryParams.id) {
-    return wrapResponse(null, 400, {
-      message: "Empty Parameter. Please fill all parameters.",
-    });
-  }
-
-  const { id } = queryParams;
-
-  try {
-    let user = await get("users", "id", id);
-    if (user.length === 0) {
-      return wrapResponse(null, 400, {
-        message: "Not Found. User does not exist.",
-      });
-    }
-    return wrapResponse({ user: user[0] });
-  } catch (error) {
-    return wrapResponse(null, 500, error);
-  }
-}
-
-// Register handler
+// Register
 async function register(event) {
   const data = JSON.parse(event.body);
   const { fullname, email, password } = data;
@@ -59,7 +37,7 @@ async function register(event) {
   }
 }
 
-// Login handler
+// Login
 async function login(event) {
   const data = JSON.parse(event.body);
   const { email, password } = data;
@@ -86,4 +64,33 @@ async function login(event) {
   }
 }
 
-export { hello, register, login, user };
+// *************
+// USER HANDLERS
+// *************
+
+// GET user with id
+async function getUser(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams || !queryParams.id) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id } = queryParams;
+
+  try {
+    let user = await get("users", "id", id);
+    if (user.length === 0) {
+      return wrapResponse(null, 400, {
+        message: "Not Found. User does not exist.",
+      });
+    }
+    return wrapResponse({ user: user[0] });
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+export { hello, register, login, getUser };
