@@ -108,7 +108,7 @@ async function addUser(data) {
   VALUES(?, ?, ?, ?, ?);
   `;
 
-  let presentDate = moment().format("DD-MM-YYYY HH:mm:ss");
+  let presentDate = moment().format();
 
   const hash = await bcrypt.hash(data.password, 8);
 

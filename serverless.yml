@@ -43,3 +43,9 @@ functions:
       - http:
           method: POST
           path: login
+  user:
+    handler: src/handlers/index.user
+    events:
+      - http:
+          method: GET
+          path: user
