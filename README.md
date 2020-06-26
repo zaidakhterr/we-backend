@@ -11,7 +11,7 @@ Backend for the we-project (aka. NEDian's Forum)
 5. Run `sls offline` to run locally.
 6. Run `sls deploy` to deploy to AWS.
 
-## ⚡ API Endpoints:
+# ⚡ API Endpoints:
 
 All response will be of similar structure as below:
 
@@ -26,6 +26,10 @@ All response will be of similar structure as below:
 - The `result_object` will vary.
 - `status` will be _true_ if request succeeds, _false_ otherwise.
 - `error_object` will contain the error, if any.
+
+## 📢 Public Endpoints
+
+These endpoints can be accessed by any user.
 
 ### 1. POST /register
 
@@ -58,6 +62,27 @@ To login a user
 
 To get the user information
 
-### 4. DELETE /user
+## 🔏 Private Endpoints
 
-Delete user
+These endpoints require a valid token.
+
+### 1. DELETE /user
+
+Delete the user making the request.
+
+### 2. PUT /user
+
+To register a user. Also logs the user in.
+
+#### Request Body:
+
+All fields are nessecary here. Pass new(updated) value in field that is to be updated. Keep the rest of the fields the same.
+
+```json
+{
+  "fullname": "[full_name]",
+  "email": "[email_address]",
+  "description": "[description]",
+  "image": "[image_url]"
+}
+```
