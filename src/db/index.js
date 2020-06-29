@@ -151,6 +151,8 @@ async function _addUser(data) {
   }
 }
 
+// Update details of user provided with user id
+// returns: Object of updated user
 async function _updateUser(id, data) {
   console.log(data);
   let sql =
