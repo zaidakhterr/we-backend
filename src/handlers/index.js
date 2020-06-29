@@ -33,7 +33,16 @@ async function register(event) {
   try {
     let user = await _addUser({ fullname, email, password });
     let token = await _generateJWT(user);
-    return wrapResponse({ user, token });
+
+    let userObj = {
+      id: user.id,
+      email: user.email,
+      fullname: user.fullname,
+      image: user.image,
+      description: user.description,
+      updated_at: user.updated_at,
+    };
+    return wrapResponse({ user: userObj, token });
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
@@ -59,9 +68,19 @@ async function login(event) {
     }
 
     let verified = await _verifyPassword(password, user[0].password);
+
+    let userObj = {
+      id: user[0].id,
+      email: user[0].email,
+      fullname: user[0].fullname,
+      image: user[0].image,
+      description: user[0].description,
+      updated_at: user[0].updated_at,
+    };
+
     if (verified) {
       let token = await _generateJWT(user[0]);
-      return wrapResponse({ user: user[0], token });
+      return wrapResponse({ user: userObj, token });
     }
 
     return wrapResponse(null, 400, {
