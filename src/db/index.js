@@ -177,8 +177,8 @@ async function _updateUser(id, data) {
   }
 }
 
-// Insert user to the users table
-// returns: Object of the user inserted or throws error
+// Insert question to the questions table
+// returns: Object of the question inserted or throws error
 async function _addQuestion(user_id, data) {
   let sql = `
   INSERT INTO questions (user_id, question, tags, created_at, updated_at)
