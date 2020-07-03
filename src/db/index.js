@@ -66,6 +66,7 @@ async function _verifyJWT(event) {
     return [false, undefined];
   }
 }
+
 // Verify Password
 // returns: A boolean specifying if password is verified or not
 async function _verifyPassword(password, hash) {

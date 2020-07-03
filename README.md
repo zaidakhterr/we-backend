@@ -86,3 +86,14 @@ All fields are nessecary here. Pass new(updated) value in field that is to be up
   "image": "[image_url]"
 }
 ```
+
+### 3. POST /question
+
+To ask a new question. Here the question will be the _stringified_ **JSON Object** we get from the text editor(_Slate.js_) and the tags will be a _stringified_ array of tags.
+
+```json
+{
+  "question": "[question]",
+  "tags": "[tags]"
+}
+```
