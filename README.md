@@ -62,6 +62,16 @@ To login a user
 
 To get the user information
 
+### 4. GET /question?id=[id]
+
+To get the question by **question_id**
+
+### 5. GET /question?user_id=[user_id]
+
+To get the questions by **user_id**
+
+<hr/>
+
 ## 🔏 Private Endpoints
 
 These endpoints require a valid token.
