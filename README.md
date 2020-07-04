@@ -101,3 +101,7 @@ Here the question will be the _stringified_ **JSON Object** we get from the text
   "tags": "[tags]"
 }
 ```
+
+### 4. DELETE /questtion?id=[id]
+
+To delete a question.
