@@ -73,3 +73,9 @@ functions:
       - http:
           method: DELETE
           path: question
+  getQuestion:
+    handler: src/handlers/index.getQuestion
+    events:
+      - http:
+          method: GET
+          path: question

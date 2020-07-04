@@ -100,7 +100,7 @@ async function login(event) {
 async function getUser(event) {
   const queryParams = event.queryStringParameters;
 
-  if (!queryParams || !queryParams.id) {
+  if (!queryParams && !queryParams.id) {
     return wrapResponse(null, 400, {
       message: "Empty Parameter. Please fill all parameters.",
     });
@@ -230,6 +230,45 @@ async function deleteQuestion(event) {
   }
 }
 
+// GET question
+async function getQuestion(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams && (!queryParams.id || !queryParams.user_id)) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id, user_id } = queryParams;
+
+  try {
+    if (id) {
+      let question = await _get("questions", "id", id);
+
+      if (question.length === 0) {
+        return wrapResponse(null, 400, {
+          message: "Not Found. Question does not exist.",
+        });
+      }
+
+      return wrapResponse({ question: question[0] });
+    } else {
+      let questions = await _get("questions", "user_id", user_id);
+
+      if (questions.length === 0) {
+        return wrapResponse(null, 400, {
+          message: "Not Found. User hasn't asked any questions",
+        });
+      }
+
+      return wrapResponse({ questions });
+    }
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
 export {
   hello,
   register,
@@ -239,4 +278,5 @@ export {
   updateUser,
   addQuestion,
   deleteQuestion,
+  getQuestion,
 };
