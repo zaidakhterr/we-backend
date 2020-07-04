@@ -67,3 +67,9 @@ functions:
       - http:
           method: POST
           path: question
+  deleteQuestion:
+    handler: src/handlers/index.deleteQuestion
+    events:
+      - http:
+          method: DELETE
+          path: question
