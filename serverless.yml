@@ -4,7 +4,6 @@ service:
 plugins:
   - serverless-plugin-existing-s3
   - serverless-offline
-  - serverless-bundle
   - serverless-pseudo-parameters
 
 custom:
