@@ -31,51 +31,60 @@ functions:
       - http:
           method: GET
           path: hello
+          cors: true
   register:
     handler: src/handlers/index.register
     events:
       - http:
           method: POST
           path: register
+          cors: true
   login:
     handler: src/handlers/index.login
     events:
       - http:
           method: POST
           path: login
+          cors: true
   getUser:
     handler: src/handlers/index.getUser
     events:
       - http:
           method: GET
           path: user
+          cors: true
   deleteUser:
     handler: src/handlers/index.deleteUser
     events:
       - http:
           method: DELETE
           path: user
+          cors: true
   updateUser:
     handler: src/handlers/index.updateUser
     events:
       - http:
           method: PUT
           path: user
+          cors: true
   addQuestion:
     handler: src/handlers/index.addQuestion
     events:
       - http:
           method: POST
           path: question
+          cors: true
   deleteQuestion:
     handler: src/handlers/index.deleteQuestion
     events:
       - http:
           method: DELETE
           path: question
+          cors: true
   getQuestion:
     handler: src/handlers/index.getQuestion
     events:
       - http:
           method: GET
           path: question
+          cors: true
