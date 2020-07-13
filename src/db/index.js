@@ -66,6 +66,7 @@ async function _verifyJWT(event) {
     return [false, undefined];
   }
 }
+
 // Verify Password
 // returns: A boolean specifying if password is verified or not
 async function _verifyPassword(password, hash) {
@@ -151,6 +152,8 @@ async function _addUser(data) {
   }
 }
 
+// Update details of user provided with user id
+// returns: Object of updated user
 async function _updateUser(id, data) {
   console.log(data);
   let sql =
@@ -175,6 +178,33 @@ async function _updateUser(id, data) {
   }
 }
 
+// Insert question to the questions table
+// returns: Object of the question inserted or throws error
+async function _addQuestion(user_id, data) {
+  let sql = `
+  INSERT INTO questions (user_id, question, tags, created_at, updated_at)
+  VALUES(?, ?, ?, ?, ?);
+  `;
+
+  let presentDate = moment().format();
+
+  let params = [user_id, data.question, data.tags, presentDate, presentDate];
+
+  try {
+    await db.query(sql, params);
+    await db.end();
+
+    let results = await db.query(
+      "SELECT * FROM questions WHERE id=(SELECT LAST_INSERT_ID())"
+    );
+    await db.end();
+    return results[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export {
   wrapResponse,
   _generateJWT,
@@ -184,4 +214,5 @@ export {
   _delete,
   _addUser,
   _updateUser,
+  _addQuestion,
 };

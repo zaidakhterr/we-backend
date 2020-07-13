@@ -7,6 +7,7 @@ const {
   _delete,
   _addUser,
   _updateUser,
+  _addQuestion,
 } = require("../db");
 
 // Dummy handler
@@ -33,7 +34,16 @@ async function register(event) {
   try {
     let user = await _addUser({ fullname, email, password });
     let token = await _generateJWT(user);
-    return wrapResponse({ user, token });
+
+    let userObj = {
+      id: user.id,
+      email: user.email,
+      fullname: user.fullname,
+      image: user.image,
+      description: user.description,
+      updated_at: user.updated_at,
+    };
+    return wrapResponse({ user: userObj, token });
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
@@ -59,9 +69,19 @@ async function login(event) {
     }
 
     let verified = await _verifyPassword(password, user[0].password);
+
+    let userObj = {
+      id: user[0].id,
+      email: user[0].email,
+      fullname: user[0].fullname,
+      image: user[0].image,
+      description: user[0].description,
+      updated_at: user[0].updated_at,
+    };
+
     if (verified) {
       let token = await _generateJWT(user[0]);
-      return wrapResponse({ user: user[0], token });
+      return wrapResponse({ user: userObj, token });
     }
 
     return wrapResponse(null, 400, {
@@ -80,7 +100,7 @@ async function login(event) {
 async function getUser(event) {
   const queryParams = event.queryStringParameters;
 
-  if (!queryParams || !queryParams.id) {
+  if (!queryParams && !queryParams.id) {
     return wrapResponse(null, 400, {
       message: "Empty Parameter. Please fill all parameters.",
     });
@@ -147,4 +167,116 @@ async function updateUser(event) {
   }
 }
 
-export { hello, register, login, getUser, deleteUser, updateUser };
+// *****************
+// QUESTION HANDLERS
+// *****************
+
+// ADD question
+async function addQuestion(event) {
+  const data = JSON.parse(event.body);
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _addQuestion(decodedUser.id, data);
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+// DELETE question
+async function deleteQuestion(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams || !queryParams.id) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id } = queryParams;
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _delete(
+      "questions",
+      "id",
+      id,
+      "user_id",
+      decodedUser.id
+    );
+    if (result.affectedRows === 0) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. You can't delete a question you didn't ask.",
+      });
+    }
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+// GET question
+async function getQuestion(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams && (!queryParams.id || !queryParams.user_id)) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id, user_id } = queryParams;
+
+  try {
+    if (id) {
+      let question = await _get("questions", "id", id);
+
+      if (question.length === 0) {
+        return wrapResponse(null, 400, {
+          message: "Not Found. Question does not exist.",
+        });
+      }
+
+      return wrapResponse({ question: question[0] });
+    } else {
+      let questions = await _get("questions", "user_id", user_id);
+
+      if (questions.length === 0) {
+        return wrapResponse(null, 400, {
+          message: "Not Found. User hasn't asked any questions",
+        });
+      }
+
+      return wrapResponse({ questions });
+    }
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+export {
+  hello,
+  register,
+  login,
+  getUser,
+  deleteUser,
+  updateUser,
+  addQuestion,
+  deleteQuestion,
+  getQuestion,
+};
