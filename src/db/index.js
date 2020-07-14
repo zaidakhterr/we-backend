@@ -78,13 +78,21 @@ async function _verifyPassword(password, hash) {
   }
 }
 
-// Get results from any table. Can quey with 1 or 2 fields
+// Get results from any table. Can quey with 1 or 2 fields. Pass only table name to get all entries.
 // returns: array of results or throws error
-async function _get(table, field1, value1, field2, value2) {
+async function _get(
+  table,
+  field1 = undefined,
+  value1 = undefined,
+  field2 = undefined,
+  value2 = undefined
+) {
   let sql = "";
   let params = [];
 
-  if (field2 && value2) {
+  if (!field1 && !value1) {
+    sql = `SELECT * FROM ${table}`;
+  } else if (field2 && value2) {
     sql = `SELECT * FROM ${table} WHERE ${field1} = ? AND ${field2} = ?`;
     params = [value1, value2];
   } else {
@@ -182,13 +190,20 @@ async function _updateUser(id, data) {
 // returns: Object of the question inserted or throws error
 async function _addQuestion(user_id, data) {
   let sql = `
-  INSERT INTO questions (user_id, question, tags, created_at, updated_at)
+  INSERT INTO questions (user_id, question, description, tags, created_at, updated_at)
   VALUES(?, ?, ?, ?, ?);
   `;
 
   let presentDate = moment().format();
 
-  let params = [user_id, data.question, data.tags, presentDate, presentDate];
+  let params = [
+    user_id,
+    data.question,
+    data.description,
+    data.tags,
+    presentDate,
+    presentDate,
+  ];
 
   try {
     await db.query(sql, params);
