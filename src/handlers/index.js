@@ -269,7 +269,7 @@ async function getQuestion(event) {
   }
 }
 
-export {
+module.exports = {
   hello,
   register,
   login,

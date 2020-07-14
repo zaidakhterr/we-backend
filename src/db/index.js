@@ -1,5 +1,5 @@
-const dbConfig = require("../config/db_config").dbConfig;
-const JWTSecret = require("../config").keys.JWT_SECRET;
+const dbConfig = require("../config/db_config");
+const JWTSecret = require("../config").JWT_SECRET;
 
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
@@ -220,7 +220,7 @@ async function _addQuestion(user_id, data) {
   }
 }
 
-export {
+module.exports = {
   wrapResponse,
   _generateJWT,
   _verifyJWT,
