@@ -191,7 +191,7 @@ async function _updateUser(id, data) {
 async function _addQuestion(user_id, data) {
   let sql = `
   INSERT INTO questions (user_id, question, description, tags, created_at, updated_at)
-  VALUES(?, ?, ?, ?, ?);
+  VALUES(?, ?, ?, ?, ?, ?);
   `;
 
   let presentDate = moment().format();

@@ -173,6 +173,7 @@ async function updateUser(event) {
 
 // ADD question
 async function addQuestion(event) {
+  console.log(event.body);
   const data = JSON.parse(event.body);
 
   try {

@@ -103,11 +103,12 @@ To ask a new question.
 
 #### Request Body:
 
-Here the question will be the _stringified_ **JSON Object** we get from the text editor(_Slate.js_) and the tags will be a _stringified_ array of tags.
+Here.the question will be a _string_ , the description will be the _stringified_ **JSON Object** we get from the text editor(_Slate.js_) and the tags will be a _stringified_ array of tags.
 
 ```json
 {
   "question": "[question]",
+  "description": "[description]",
   "tags": "[tags]"
 }
 ```
