@@ -272,15 +272,19 @@ async function getQuestion(event) {
 
 // GET all questions
 async function getAllQuestions(event) {
-  let questions = await _get("questions");
-  if (questions.length === 0) {
-    return wrapResponse(null, 400, {
-      message: "Questions Not Found",
-    });
-  } 
-  return wrapResponse({ questions });
+  try {
+    let questions = await _get("questions");
+    if (questions.length === 0) {
+      return wrapResponse(null, 400, {
+        message: "Questions Not Found",
+      });
+    }
+    return wrapResponse({ questions });
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
 }
- 
+
 module.exports = {
   hello,
   register,
