@@ -270,6 +270,17 @@ async function getQuestion(event) {
   }
 }
 
+// GET all questions
+async function getAllQuestions(event) {
+  let questions = await _get("questions");
+  if (questions.length === 0) {
+    return wrapResponse(null, 400, {
+      message: "Questions Not Found",
+    });
+  } 
+  return wrapResponse({ questions });
+}
+ 
 module.exports = {
   hello,
   register,
@@ -280,4 +291,5 @@ module.exports = {
   addQuestion,
   deleteQuestion,
   getQuestion,
+  getAllQuestions,
 };
