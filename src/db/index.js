@@ -91,7 +91,7 @@ async function _get(
   let params = [];
 
   if (!field1 && !value1) {
-    sql = `SELECT * FROM ${table}`;
+    sql = `SELECT * FROM ${table} ORDER BY updated_at DESC`;
   } else if (field2 && value2) {
     sql = `SELECT * FROM ${table} WHERE ${field1} = ? AND ${field2} = ?`;
     params = [value1, value2];

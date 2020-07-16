@@ -87,3 +87,10 @@ functions:
           method: GET
           path: question
           cors: true
+  getAllQuestions:
+    handler: src/handlers/index.getAllQuestions
+    events:
+      - http:
+          method: GET
+          path: questions
+          cors: true
