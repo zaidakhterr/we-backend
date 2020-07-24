@@ -220,6 +220,75 @@ async function _addQuestion(user_id, data) {
   }
 }
 
+// Insert answers to the answers table
+// returns: Object of the answer inserted or throws error
+async function _addAnswer(user_id, data) {
+  let sql = `
+  INSERT INTO answers (question_id, user_id, answer, up_vote, down_vote, created_at, updated_at)
+  VALUES(?, ?, ?, ?, ?, ?, ?);
+  `;
+
+  let presentDate = moment().format();
+
+  let params = [
+    data.question_id,
+    user_id,
+    data.answer,
+    0,
+    0,
+    presentDate,
+    presentDate,
+  ];
+
+  try {
+    await db.query(sql, params);
+    await db.end();
+
+    let results = await db.query(
+      "SELECT * FROM answers WHERE id=(SELECT LAST_INSERT_ID())"
+    );
+    await db.end();
+    return results[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// upvote answer
+// async function _upVote(answer_id, data) {
+//   let sql = `
+//   INSERT INTO answers (question_id, user_id, answer, up_vote, down_vote, created_at, updated_at)
+//   VALUES(?, ?, ?, ?, ?, ?, ?);
+//   `;
+
+//   let presentDate = moment().format();
+
+//   let params = [
+//     0,
+//     0,
+//     0,
+//     data.up_vote,
+//     0,
+//     presentDate,
+//     presentDate,
+//   ];
+
+//   try {
+//     await db.query(sql, params);
+//     await db.end();
+
+//     let results = await db.query(
+//       "UPDATE answers SET up_vote = up_vote + 1 WHERE"
+//     );
+//     await db.end();
+//     return results;
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// }
+
 module.exports = {
   wrapResponse,
   _generateJWT,
@@ -230,4 +299,6 @@ module.exports = {
   _addUser,
   _updateUser,
   _addQuestion,
+  _addAnswer,
+  _upVote,
 };
