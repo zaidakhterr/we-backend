@@ -8,6 +8,8 @@ const {
   _addUser,
   _updateUser,
   _addQuestion,
+  _addAnswer,
+  _upVote,
 } = require("../db");
 
 // Dummy handler
@@ -183,7 +185,8 @@ async function addQuestion(event) {
       return wrapResponse(null, 401, {
         message: "Unauthorized. Token Error.",
       });
-    }
+    }123
+    
 
     let result = await _addQuestion(decodedUser.id, data);
     return wrapResponse(result);
@@ -246,6 +249,7 @@ async function getQuestion(event) {
   try {
     if (id) {
       let question = await _get("questions", "id", id);
+      let answer = await _get("answers", "question_id", id);
 
       if (question.length === 0) {
         return wrapResponse(null, 400, {
@@ -253,9 +257,10 @@ async function getQuestion(event) {
         });
       }
 
-      return wrapResponse({ question: question[0] });
+      return wrapResponse({ question: question[0] , answer});
     } else {
       let questions = await _get("questions", "user_id", user_id);
+      let answers = await _get("answers", "user_id", user_id);
 
       if (questions.length === 0) {
         return wrapResponse(null, 400, {
@@ -263,7 +268,7 @@ async function getQuestion(event) {
         });
       }
 
-      return wrapResponse({ questions });
+      return wrapResponse({ questions, answers });
     }
   } catch (error) {
     return wrapResponse(null, 500, error);
@@ -285,6 +290,87 @@ async function getAllQuestions(event) {
   }
 }
 
+// ADD answer
+async function addAnswer(event) {
+  console.log(event.body);
+  const data = JSON.parse(event.body);
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _addAnswer(decodedUser.id, data);
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+//DELETE answer
+async function deleteAnswer(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams || !queryParams.id) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id } = queryParams;
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _delete(
+      "answers",
+      "id",
+      id,
+      "user_id",
+      decodedUser.id
+    );
+    if (result.affectedRows === 0) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. You can't delete an answer you didn't answered.",
+      });
+    }
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+//upvote answer
+async function upVote(event) {
+  console.log(event.body);
+  const data = JSON.parse(event.body);
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _upVote(decodedUser.id, data);
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
 module.exports = {
   hello,
   register,
@@ -296,4 +382,7 @@ module.exports = {
   deleteQuestion,
   getQuestion,
   getAllQuestions,
+  addAnswer,
+  deleteAnswer,
+  upVote,
 };
