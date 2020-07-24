@@ -62,6 +62,24 @@ To login a user
 
 To get the user information
 
+### 4. GET /question?id=[id]
+
+To get the question by **question_id**
+
+### 5. GET /question?user_id=[user_id]
+
+To get the questions by **user_id**
+
+### 6. GET /answer?question_id=[id]
+
+To get answer by **question_id**
+
+### 7. GET /answer?user_id=[user_id]
+
+To get answer by **user_id**
+
+<hr/>
+
 ## 🔏 Private Endpoints
 
 These endpoints require a valid token.
@@ -86,3 +104,41 @@ All fields are nessecary here. Pass new(updated) value in field that is to be up
   "image": "[image_url]"
 }
 ```
+
+### 3. POST /question
+
+To ask a new question.
+
+#### Request Body:
+
+Here.the question will be a _string_ , the description will be the _stringified_ **JSON Object** we get from the text editor(_Slate.js_) and the tags will be a _stringified_ array of tags.
+
+```json
+{
+  "question": "[question]",
+  "description": "[description]",
+  "tags": "[tags]"
+}
+```
+
+### 4. DELETE /question?id=[id]
+
+To delete a question.
+
+### 4. POST /answer
+
+To answer a question.
+
+### Request Body:
+
+Here. the question_id will be a number and the answer will be a _string_
+```json
+{
+  "question_id": [question_id],
+  "answer": "[answer]"
+}
+```
+
+### 5. DELETE /answer?id=[id]
+
+To delete an answer.

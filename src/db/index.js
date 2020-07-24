@@ -1,5 +1,5 @@
-const dbConfig = require("../config/db_config").dbConfig;
-const JWTSecret = require("../config").keys.JWT_SECRET;
+const dbConfig = require("../config/db_config");
+const JWTSecret = require("../config").JWT_SECRET;
 
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
@@ -66,6 +66,7 @@ async function _verifyJWT(event) {
     return [false, undefined];
   }
 }
+
 // Verify Password
 // returns: A boolean specifying if password is verified or not
 async function _verifyPassword(password, hash) {
@@ -77,13 +78,21 @@ async function _verifyPassword(password, hash) {
   }
 }
 
-// Get results from any table. Can quey with 1 or 2 fields
+// Get results from any table. Can quey with 1 or 2 fields. Pass only table name to get all entries.
 // returns: array of results or throws error
-async function _get(table, field1, value1, field2, value2) {
+async function _get(
+  table,
+  field1 = undefined,
+  value1 = undefined,
+  field2 = undefined,
+  value2 = undefined
+) {
   let sql = "";
   let params = [];
 
-  if (field2 && value2) {
+  if (!field1 && !value1) {
+    sql = `SELECT * FROM ${table} ORDER BY updated_at DESC`;
+  } else if (field2 && value2) {
     sql = `SELECT * FROM ${table} WHERE ${field1} = ? AND ${field2} = ?`;
     params = [value1, value2];
   } else {
@@ -177,7 +186,110 @@ async function _updateUser(id, data) {
   }
 }
 
-export {
+// Insert question to the questions table
+// returns: Object of the question inserted or throws error
+async function _addQuestion(user_id, data) {
+  let sql = `
+  INSERT INTO questions (user_id, question, description, tags, created_at, updated_at)
+  VALUES(?, ?, ?, ?, ?, ?);
+  `;
+
+  let presentDate = moment().format();
+
+  let params = [
+    user_id,
+    data.question,
+    data.description,
+    data.tags,
+    presentDate,
+    presentDate,
+  ];
+
+  try {
+    await db.query(sql, params);
+    await db.end();
+
+    let results = await db.query(
+      "SELECT * FROM questions WHERE id=(SELECT LAST_INSERT_ID())"
+    );
+    await db.end();
+    return results[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// Insert answers to the answers table
+// returns: Object of the answer inserted or throws error
+async function _addAnswer(user_id, data) {
+  let sql = `
+  INSERT INTO answers (question_id, user_id, answer, up_vote, down_vote, created_at, updated_at)
+  VALUES(?, ?, ?, ?, ?, ?, ?);
+  `;
+
+  let presentDate = moment().format();
+
+  let params = [
+    data.question_id,
+    user_id,
+    data.answer,
+    0,
+    0,
+    presentDate,
+    presentDate,
+  ];
+
+  try {
+    await db.query(sql, params);
+    await db.end();
+
+    let results = await db.query(
+      "SELECT * FROM answers WHERE id=(SELECT LAST_INSERT_ID())"
+    );
+    await db.end();
+    return results[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// upvote answer
+// async function _upVote(answer_id, data) {
+//   let sql = `
+//   INSERT INTO answers (question_id, user_id, answer, up_vote, down_vote, created_at, updated_at)
+//   VALUES(?, ?, ?, ?, ?, ?, ?);
+//   `;
+
+//   let presentDate = moment().format();
+
+//   let params = [
+//     0,
+//     0,
+//     0,
+//     data.up_vote,
+//     0,
+//     presentDate,
+//     presentDate,
+//   ];
+
+//   try {
+//     await db.query(sql, params);
+//     await db.end();
+
+//     let results = await db.query(
+//       "UPDATE answers SET up_vote = up_vote + 1 WHERE"
+//     );
+//     await db.end();
+//     return results;
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// }
+
+module.exports = {
   wrapResponse,
   _generateJWT,
   _verifyJWT,
@@ -186,4 +298,7 @@ export {
   _delete,
   _addUser,
   _updateUser,
+  _addQuestion,
+  _addAnswer,
+  _upVote,
 };
