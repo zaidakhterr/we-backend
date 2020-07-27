@@ -185,8 +185,8 @@ async function addQuestion(event) {
       return wrapResponse(null, 401, {
         message: "Unauthorized. Token Error.",
       });
-    }123
-    
+    }
+    123;
 
     let result = await _addQuestion(decodedUser.id, data);
     return wrapResponse(result);
@@ -257,7 +257,7 @@ async function getQuestion(event) {
         });
       }
 
-      return wrapResponse({ question: question[0] , answer});
+      return wrapResponse({ question: question[0], answer });
     } else {
       let questions = await _get("questions", "user_id", user_id);
       let answers = await _get("answers", "user_id", user_id);
@@ -332,16 +332,45 @@ async function deleteAnswer(event) {
       });
     }
 
-    let result = await _delete(
-      "answers",
-      "id",
-      id,
-      "user_id",
-      decodedUser.id
-    );
+    let result = await _delete("answers", "id", id, "user_id", decodedUser.id);
     if (result.affectedRows === 0) {
       return wrapResponse(null, 401, {
-        message: "Unauthorized. You can't delete an answer you didn't answered.",
+        message:
+          "Unauthorized. You can't delete an answer you didn't answered.",
+      });
+    }
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+//UPVOTE answer
+async function upVote(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams || !queryParams.id) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id } = queryParams;
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _upVote(id);
+    if (result.affectedRows === 0) {
+      return wrapResponse(null, 401, {
+        message:
+          "Unauthorized. You can't upvote an answer if you're not logged in.",
       });
     }
     return wrapResponse(result);
