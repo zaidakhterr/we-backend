@@ -115,3 +115,10 @@ functions:
           method: GET
           path: upvote
           cors: true
+  downVote:
+    handler: src/handlers/index.downVote
+    events:
+      - http:
+          method: GET
+          path: downvote
+          cors: true

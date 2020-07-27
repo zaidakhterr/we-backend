@@ -10,6 +10,7 @@ const {
   _addQuestion,
   _addAnswer,
   _upVote,
+  _downVote,
 } = require("../db");
 
 // Dummy handler
@@ -379,6 +380,39 @@ async function upVote(event) {
   }
 }
 
+//DOWNVOTE answer
+async function downVote(event) {
+  const queryParams = event.queryStringParameters;
+
+  if (!queryParams || !queryParams.id) {
+    return wrapResponse(null, 400, {
+      message: "Empty Parameter. Please fill all parameters.",
+    });
+  }
+
+  const { id } = queryParams;
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let result = await _downVote(id);
+    if (result.affectedRows === 0) {
+      return wrapResponse(null, 401, {
+        message:
+          "Unauthorized. You can't upvote an answer if you're not logged in.",
+      });
+    }
+    return wrapResponse(result);
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
 module.exports = {
   hello,
   register,
@@ -393,4 +427,5 @@ module.exports = {
   addAnswer,
   deleteAnswer,
   upVote,
+  downVote,
 };

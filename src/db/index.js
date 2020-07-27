@@ -274,6 +274,25 @@ async function _upVote(answer_id) {
   }
 }
 
+// downvote answer
+async function _downVote(answer_id) {
+  let sql = `
+  UPDATE answers SET down_vote = down_vote - 1 WHERE id = ?;
+  `;
+
+  let params = [answer_id];
+
+  try {
+    let result = await db.query(sql, params);
+    await db.end();
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 module.exports = {
   wrapResponse,
   _generateJWT,
@@ -286,4 +305,5 @@ module.exports = {
   _addQuestion,
   _addAnswer,
   _upVote,
+  _downVote,
 };
