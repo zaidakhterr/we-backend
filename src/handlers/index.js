@@ -350,27 +350,6 @@ async function deleteAnswer(event) {
   }
 }
 
-//upvote answer
-async function upVote(event) {
-  console.log(event.body);
-  const data = JSON.parse(event.body);
-
-  try {
-    const [verified, decodedUser] = await _verifyJWT(event);
-
-    if (!verified) {
-      return wrapResponse(null, 401, {
-        message: "Unauthorized. Token Error.",
-      });
-    }
-
-    let result = await _upVote(decodedUser.id, data);
-    return wrapResponse(result);
-  } catch (error) {
-    return wrapResponse(null, 500, error);
-  }
-}
-
 module.exports = {
   hello,
   register,

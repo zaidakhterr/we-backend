@@ -108,8 +108,8 @@ functions:
           method: DELETE
           path: answer
           cors: true
-  _upVote:
-    handler: src/handlers/index._upVote
+  upVote:
+    handler: src/handlers/index.upVote
     events:
       - http:
           method: POST
