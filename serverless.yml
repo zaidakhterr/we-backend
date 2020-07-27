@@ -112,6 +112,6 @@ functions:
     handler: src/handlers/index.upVote
     events:
       - http:
-          method: POST
+          method: GET
           path: upvote
           cors: true

@@ -256,33 +256,18 @@ async function _addAnswer(user_id, data) {
 }
 
 // upvote answer
-async function _upVote(answer_id, data) {
+async function _upVote(answer_id) {
   let sql = `
-  INSERT INTO answers (question_id, user_id, answer, up_vote, down_vote, created_at, updated_at)
-  VALUES(?, ?, ?, ?, ?, ?, ?);
+  UPDATE answers SET up_vote = up_vote + 1 WHERE id = ?;
   `;
 
-  let presentDate = moment().format();
-
-  let params = [
-    data.question_id,
-    data.user_id,
-    0,
-    data.up_vote,
-    0,
-    presentDate,
-    presentDate,
-  ];
+  let params = [answer_id];
 
   try {
-    await db.query(sql, params);
+    let result = await db.query(sql, params);
     await db.end();
 
-    let results = await db.query(
-      "UPDATE answers SET up_vote = up_vote + 1 WHERE id = ?"
-    );
-    await db.end();
-    return results;
+    return result;
   } catch (error) {
     console.log(error);
     throw error;
