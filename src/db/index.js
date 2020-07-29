@@ -256,38 +256,42 @@ async function _addAnswer(user_id, data) {
 }
 
 // upvote answer
-// async function _upVote(answer_id, data) {
-//   let sql = `
-//   INSERT INTO answers (question_id, user_id, answer, up_vote, down_vote, created_at, updated_at)
-//   VALUES(?, ?, ?, ?, ?, ?, ?);
-//   `;
+async function _upVote(answer_id) {
+  let sql = `
+  UPDATE answers SET up_vote = up_vote + 1 WHERE id = ?;
+  `;
 
-//   let presentDate = moment().format();
+  let params = [answer_id];
 
-//   let params = [
-//     0,
-//     0,
-//     0,
-//     data.up_vote,
-//     0,
-//     presentDate,
-//     presentDate,
-//   ];
+  try {
+    let result = await db.query(sql, params);
+    await db.end();
 
-//   try {
-//     await db.query(sql, params);
-//     await db.end();
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
-//     let results = await db.query(
-//       "UPDATE answers SET up_vote = up_vote + 1 WHERE"
-//     );
-//     await db.end();
-//     return results;
-//   } catch (error) {
-//     console.log(error);
-//     throw error;
-//   }
-// }
+// downvote answer
+async function _downVote(answer_id) {
+  let sql = `
+  UPDATE answers SET down_vote = down_vote - 1 WHERE id = ?;
+  `;
+
+  let params = [answer_id];
+
+  try {
+    let result = await db.query(sql, params);
+    await db.end();
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 module.exports = {
   wrapResponse,
@@ -301,4 +305,5 @@ module.exports = {
   _addQuestion,
   _addAnswer,
   _upVote,
+  _downVote,
 };
