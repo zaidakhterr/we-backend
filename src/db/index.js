@@ -14,7 +14,8 @@ function wrapResponse(jsonData = null, statusCode = 200, error = undefined) {
   }
 
   let response = {
-    statusCode,
+    statusCode:
+      error && error.code && error.code === "ER_DUP_ENTRY" ? 400 : statusCode,
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Headers": "*",
