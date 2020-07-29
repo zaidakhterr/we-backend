@@ -1,6 +1,8 @@
 const dbConfig = require("../config/db_config");
 const JWTSecret = require("../config").JWT_SECRET;
 
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({ signatureVersion: "v4" });
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const bcrypt = require("bcryptjs");
@@ -77,6 +79,29 @@ async function _verifyPassword(password, hash) {
   } catch (error) {
     throw error;
   }
+}
+
+// Get Signed Url (Used for images)
+// returns URL or throws error
+async function _getSignedUrl(params) {
+  return new Promise((resolve, reject) => {
+    let key = params.name.split(".");
+    let s3Params = {
+      Bucket: "workerzero",
+      Key: key[0] + "-" + Date.now() + "." + key[1],
+      ContentType: params.type,
+      ACL: "public-read",
+      Expires: 6000,
+    };
+
+    s3.getSignedUrl("putObject", s3Params, async function (err, url) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(url);
+      }
+    });
+  });
 }
 
 // Get results from any table. Can quey with 1 or 2 fields. Pass only table name to get all entries.
@@ -278,7 +303,7 @@ async function _upVote(answer_id) {
 // downvote answer
 async function _downVote(answer_id) {
   let sql = `
-  UPDATE answers SET down_vote = down_vote - 1 WHERE id = ?;
+  UPDATE answers SET down_vote = down_vote + 1 WHERE id = ?;
   `;
 
   let params = [answer_id];
@@ -307,4 +332,5 @@ module.exports = {
   _addAnswer,
   _upVote,
   _downVote,
+  _getSignedUrl,
 };
