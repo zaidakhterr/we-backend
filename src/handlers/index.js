@@ -405,7 +405,7 @@ async function downVote(event) {
     if (result.affectedRows === 0) {
       return wrapResponse(null, 401, {
         message:
-          "Unauthorized. You can't upvote an answer if you're not logged in.",
+          "Unauthorized. You can't downvote an answer if you're not logged in.",
       });
     }
     return wrapResponse(result);
