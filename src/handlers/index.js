@@ -11,6 +11,7 @@ const {
   _addAnswer,
   _upVote,
   _downVote,
+  _getSignedUrl,
 } = require("../db");
 
 // Dummy handler
@@ -170,6 +171,18 @@ async function updateUser(event) {
   }
 }
 
+// GET SignedUrl
+async function getSignedUrl(event) {
+  const params = JSON.parse(event.body);
+
+  try {
+    let url = await _getSignedUrl(params);
+    return wrapResponse({ url });
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
 // *****************
 // QUESTION HANDLERS
 // *****************
@@ -312,7 +325,7 @@ async function addAnswer(event) {
   }
 }
 
-//DELETE answer
+// DELETE answer
 async function deleteAnswer(event) {
   const queryParams = event.queryStringParameters;
 
@@ -346,7 +359,7 @@ async function deleteAnswer(event) {
   }
 }
 
-//UPVOTE answer
+// UPVOTE answer
 async function upVote(event) {
   const queryParams = event.queryStringParameters;
 
@@ -380,7 +393,7 @@ async function upVote(event) {
   }
 }
 
-//DOWNVOTE answer
+// DOWNVOTE answer
 async function downVote(event) {
   const queryParams = event.queryStringParameters;
 
@@ -413,6 +426,7 @@ async function downVote(event) {
     return wrapResponse(null, 500, error);
   }
 }
+
 module.exports = {
   hello,
   register,
@@ -428,4 +442,5 @@ module.exports = {
   deleteAnswer,
   upVote,
   downVote,
+  getSignedUrl,
 };

@@ -10,6 +10,25 @@ custom:
   serverless-offline:
     httpPort: 4000
 
+resources:
+  Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: we-project
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+
 provider:
   name: aws
   profile: nedian
@@ -21,7 +40,10 @@ provider:
     - Effect: "Allow"
       Action:
         - "s3:*"
-      Resource: "arn:aws:s3:::we-project"
+      Resource: "arn:aws:s3:::we-project/*"
+  package:
+    exclude:
+      - "node_modules/aws-sdk/**"
 
 functions:
   hello:
@@ -30,6 +52,13 @@ functions:
       - http:
           method: GET
           path: hello
+          cors: true
+  getSignedUrl:
+    handler: src/handlers/index.getSignedUrl
+    events:
+      - http:
+          method: POST
+          path: getSignedUrl
           cors: true
   register:
     handler: src/handlers/index.register
