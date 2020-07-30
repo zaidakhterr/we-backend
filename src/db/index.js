@@ -215,14 +215,16 @@ async function _updateUser(id, data) {
 // Change user password
 async function _changePassword(id, data) {
   let sql = "UPDATE users SET password = ? WHERE id = ?";
-  let params = [data.new_password, id];
+
+  const hash = await bcrypt.hash(data.new_password, 8);
+
+  let params = [hash, id];
 
   try {
-    await db.query(sql, params);
+    let result = await db.query(sql, params);
     await db.end();
 
-    let updatedUser = await _get("users", "id", id);
-    return updatedUser;
+    return result;
   } catch (error) {
     throw error;
   }
