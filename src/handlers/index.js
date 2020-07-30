@@ -165,8 +165,17 @@ async function updateUser(event) {
       });
     }
 
-    let result = await _updateUser(decodedUser.id, data);
-    return wrapResponse(result);
+    let user = await _updateUser(decodedUser.id, data);
+
+    let userObj = {
+      id: user[0].id,
+      email: user[0].email,
+      fullname: user[0].fullname,
+      image: user[0].image,
+      description: user[0].description,
+      updated_at: user[0].updated_at,
+    };
+    return wrapResponse({ user: userObj });
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
