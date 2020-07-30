@@ -78,6 +78,10 @@ To get answer by **question_id**
 
 To get answer by **user_id**
 
+### 8. POST /getSignedUrl
+
+To get a signed URL for uploading images to s3 bucket.
+
 <hr/>
 
 ## 🔏 Private Endpoints
@@ -90,7 +94,7 @@ Delete the user making the request.
 
 ### 2. PUT /user
 
-To register a user. Also logs the user in.
+To update a user.
 
 #### Request Body:
 
@@ -131,7 +135,8 @@ To answer a question.
 
 ### Request Body:
 
-Here. the question_id will be a number and the answer will be a _string_
+Here. the question*id will be a number and the answer will be a \_string*
+
 ```json
 {
   "question_id": [question_id],
@@ -142,3 +147,24 @@ Here. the question_id will be a number and the answer will be a _string_
 ### 5. DELETE /answer?id=[id]
 
 To delete an answer.
+
+### 6. GET /upvote?id=[id]
+
+To upvote an answer.
+
+### 7. GET /downvote?id=[id]
+
+To downvote an answer.
+
+### 8. PUT /changePassword
+
+To update a user.
+
+#### Request Body:
+
+```json
+{
+  "new_password": "[new_password]",
+  "old_password": "[old_password]"
+}
+```

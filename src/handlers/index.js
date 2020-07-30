@@ -11,6 +11,8 @@ const {
   _addAnswer,
   _upVote,
   _downVote,
+  _getSignedUrl,
+  _changePassword,
 } = require("../db");
 
 // Dummy handler
@@ -163,7 +165,62 @@ async function updateUser(event) {
       });
     }
 
-    let result = await _updateUser(decodedUser.id, data);
+    let user = await _updateUser(decodedUser.id, data);
+
+    let userObj = {
+      id: user[0].id,
+      email: user[0].email,
+      fullname: user[0].fullname,
+      image: user[0].image,
+      description: user[0].description,
+      updated_at: user[0].updated_at,
+    };
+    return wrapResponse({ user: userObj });
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+// GET SignedUrl
+async function getSignedUrl(event) {
+  const params = JSON.parse(event.body);
+
+  try {
+    let url = await _getSignedUrl(params);
+    return wrapResponse({ url });
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+// PUT change password
+async function changePassword(event) {
+  const data = JSON.parse(event.body);
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let user = await _get("users", "id", decodedUser.id);
+
+    let verifiedUserPassword = await _verifyPassword(
+      data.old_password,
+      user[0].password
+    );
+
+    if (!verifiedUserPassword) {
+      return wrapResponse(null, 400, {
+        message: "Incorrect password. Please enter correct password.",
+      });
+    }
+
+    let result = await _changePassword(decodedUser.id, data);
+
     return wrapResponse(result);
   } catch (error) {
     return wrapResponse(null, 500, error);
@@ -312,7 +369,7 @@ async function addAnswer(event) {
   }
 }
 
-//DELETE answer
+// DELETE answer
 async function deleteAnswer(event) {
   const queryParams = event.queryStringParameters;
 
@@ -346,7 +403,7 @@ async function deleteAnswer(event) {
   }
 }
 
-//UPVOTE answer
+// UPVOTE answer
 async function upVote(event) {
   const queryParams = event.queryStringParameters;
 
@@ -380,7 +437,7 @@ async function upVote(event) {
   }
 }
 
-//DOWNVOTE answer
+// DOWNVOTE answer
 async function downVote(event) {
   const queryParams = event.queryStringParameters;
 
@@ -413,6 +470,7 @@ async function downVote(event) {
     return wrapResponse(null, 500, error);
   }
 }
+
 module.exports = {
   hello,
   register,
@@ -428,4 +486,6 @@ module.exports = {
   deleteAnswer,
   upVote,
   downVote,
+  getSignedUrl,
+  changePassword,
 };
