@@ -155,3 +155,16 @@ To upvote an answer.
 ### 7. GET /downvote?id=[id]
 
 To downvote an answer.
+
+### 8. PUT /changePassword
+
+To update a user.
+
+#### Request Body:
+
+```json
+{
+  "new_password": "[new_password]",
+  "old_password": "[old_password]"
+}
+```
