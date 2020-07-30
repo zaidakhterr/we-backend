@@ -78,6 +78,10 @@ To get answer by **question_id**
 
 To get answer by **user_id**
 
+### 8. POST /getSignedUrl
+
+To get a signed URL for uploading images to s3 bucket.
+
 <hr/>
 
 ## 🔏 Private Endpoints
@@ -131,7 +135,8 @@ To answer a question.
 
 ### Request Body:
 
-Here. the question_id will be a number and the answer will be a _string_
+Here. the question*id will be a number and the answer will be a \_string*
+
 ```json
 {
   "question_id": [question_id],
@@ -142,3 +147,11 @@ Here. the question_id will be a number and the answer will be a _string_
 ### 5. DELETE /answer?id=[id]
 
 To delete an answer.
+
+### 6. GET /upvote?id=[id]
+
+To upvote an answer.
+
+### 7. GET /downvote?id=[id]
+
+To downvote an answer.
