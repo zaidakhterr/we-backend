@@ -91,7 +91,7 @@ async function _getSignedUrl(params) {
       Key: key[0] + "-" + Date.now() + "." + key[1],
       ContentType: params.type,
       ACL: "public-read",
-      Expires: 6000,
+      Expires: 60 * 5,
     };
 
     s3.getSignedUrl("putObject", s3Params, async function (err, url) {
