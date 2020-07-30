@@ -94,7 +94,7 @@ Delete the user making the request.
 
 ### 2. PUT /user
 
-To register a user. Also logs the user in.
+To update a user.
 
 #### Request Body:
 
