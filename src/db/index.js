@@ -212,6 +212,22 @@ async function _updateUser(id, data) {
   }
 }
 
+// Change user password
+async function _changePassword(id, data) {
+  let sql = "UPDATE users SET password = ? WHERE id = ?";
+  let params = [data.new_password, id];
+
+  try {
+    await db.query(sql, params);
+    await db.end();
+
+    let updatedUser = await _get("users", "id", id);
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Insert question to the questions table
 // returns: Object of the question inserted or throws error
 async function _addQuestion(user_id, data) {
@@ -333,4 +349,5 @@ module.exports = {
   _upVote,
   _downVote,
   _getSignedUrl,
+  _changePassword,
 };
