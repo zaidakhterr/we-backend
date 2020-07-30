@@ -12,6 +12,7 @@ const {
   _upVote,
   _downVote,
   _getSignedUrl,
+  _changePassword,
 } = require("../db");
 
 // Dummy handler
@@ -178,6 +179,40 @@ async function getSignedUrl(event) {
   try {
     let url = await _getSignedUrl(params);
     return wrapResponse({ url });
+  } catch (error) {
+    return wrapResponse(null, 500, error);
+  }
+}
+
+// PUT change password
+async function changePassword(event) {
+  const data = JSON.parse(event.body);
+
+  try {
+    const [verified, decodedUser] = await _verifyJWT(event);
+
+    if (!verified) {
+      return wrapResponse(null, 401, {
+        message: "Unauthorized. Token Error.",
+      });
+    }
+
+    let user = await _get("users", "id", decodedUser.id);
+
+    let verifiedUserPassword = await _verifyPassword(
+      data.old_password,
+      user[0].password
+    );
+
+    if (!verifiedUserPassword) {
+      return wrapResponse(null, 400, {
+        message: "Incorrect password. Please enter correct password.",
+      });
+    }
+
+    let result = await _changePassword(decodedUser.id, data);
+
+    return wrapResponse(result);
   } catch (error) {
     return wrapResponse(null, 500, error);
   }
@@ -443,4 +478,5 @@ module.exports = {
   upVote,
   downVote,
   getSignedUrl,
+  changePassword,
 };

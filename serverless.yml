@@ -95,6 +95,13 @@ functions:
           method: PUT
           path: user
           cors: true
+  changePassword:
+    handler: src/handlers/index.changePassword
+    events:
+      - http:
+          method: PUT
+          path: changePassword
+          cors: true
   addQuestion:
     handler: src/handlers/index.addQuestion
     events:
