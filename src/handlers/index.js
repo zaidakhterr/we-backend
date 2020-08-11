@@ -11,12 +11,8 @@ const {
   _addAnswer,
   _upVote,
   _downVote,
-<<<<<<< HEAD
-  _addComments,
-=======
   _getSignedUrl,
   _changePassword,
->>>>>>> 2bafc9e20107e7b884136cc331655de5d6949883
 } = require("../db");
 
 // Dummy handler
@@ -477,61 +473,6 @@ async function downVote(event) {
   }
 }
 
-// ADD comment
-async function addComments(event) {
-  console.log(event.body);
-  const data = JSON.parse(event.body);
-
-  try {
-    const [verified, decodedUser] = await _verifyJWT(event);
-
-    if (!verified) {
-      return wrapResponse(null, 401, {
-        message: "Unauthorized. Token Error.",
-      });
-    }
-
-    let result = await _addComments(decodedUser.id, data);
-    return wrapResponse(result);
-  } catch (error) {
-    return wrapResponse(null, 500, error);
-  }
-}
-
-//DELETE comment
-async function deleteComment(event) {
-  const queryParams = event.queryStringParameters;
-
-  if (!queryParams || !queryParams.id) {
-    return wrapResponse(null, 400, {
-      message: "Empty Parameter. Please fill all parameters.",
-    });
-  }
-
-  const { id } = queryParams;
-
-  try {
-    const [verified, decodedUser] = await _verifyJWT(event);
-
-    if (!verified) {
-      return wrapResponse(null, 401, {
-        message: "Unauthorized. Token Error.",
-      });
-    }
-
-    let result = await _delete("answers", "id", id, "user_id", decodedUser.id);
-    if (result.affectedRows === 0) {
-      return wrapResponse(null, 401, {
-        message:
-          "Unauthorized. You can't delete a comment you didn't commented.",
-      });
-    }
-    return wrapResponse(result);
-  } catch (error) {
-    return wrapResponse(null, 500, error);
-  }
-}
-
 module.exports = {
   hello,
   register,
@@ -547,6 +488,4 @@ module.exports = {
   deleteAnswer,
   upVote,
   downVote,
-  addComments,
-  deleteComment,
 };

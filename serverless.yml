@@ -158,17 +158,3 @@ functions:
           method: GET
           path: downvote
           cors: true
-  addComments:
-    handler: src/handlers/index.addComments
-    events:
-      - http:
-          method: POST
-          path: comments
-          cors: true
-  deleteComments:
-    handler: src/handlers/index.deleteComments
-    events:
-      - http:
-          method: DELETE
-          path: comments
-          cors: true

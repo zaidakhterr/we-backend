@@ -337,39 +337,6 @@ async function _downVote(answer_id) {
   }
 }
 
-// Insert comments in the comments table
-// returns: Object of the comment inserted or throws error
-async function _addComments(user_id, data) {
-  let sql = `
-  INSERT INTO comments (question_id, user_id, comment, created_at, updated_at)
-  VALUES(?, ?, ?, ?, ?);
-  `;
-
-  let presentDate = moment().format();
-
-  let params = [
-    question_id,
-    user_id,
-    data.comment,
-    presentDate,
-    presentDate,
-  ];
-
-  try {
-    await db.query(sql, params);
-    await db.end();
-
-    let results = await db.query(
-      "SELECT * FROM comments WHERE id=(SELECT LAST_INSERT_ID())"
-    );
-    await db.end();
-    return results[0];
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
 module.exports = {
   wrapResponse,
   _generateJWT,
@@ -383,6 +350,5 @@ module.exports = {
   _addAnswer,
   _upVote,
   _downVote,
-  _addComments,
 };
  
