@@ -87,7 +87,7 @@ async function _getSignedUrl(params) {
   return new Promise((resolve, reject) => {
     let key = params.name.split(".");
     let s3Params = {
-      Bucket: "workerzero",
+      Bucket: "we-project",
       Key: key[0] + "-" + Date.now() + "." + key[1],
       ContentType: params.type,
       ACL: "public-read",
@@ -104,7 +104,7 @@ async function _getSignedUrl(params) {
   });
 }
 
-// Get results from any table. Can quey with 1 or 2 fields. Pass only table name to get all entries.
+// Get results from any table. Can query with 1 or 2 fields. Pass only table name to get all entries.
 // returns: array of results or throws error
 async function _get(
   table,
@@ -191,10 +191,9 @@ async function _addUser(data) {
 async function _updateUser(id, data) {
   console.log(data);
   let sql =
-    "UPDATE users SET fullname = ?, email = ?, image = ?, description = ?, updated_at = ? WHERE id = ?";
+    "UPDATE users SET fullname = ?, image = ?, description = ?, updated_at = ? WHERE id = ?";
   let params = [
     data.fullname,
-    data.email,
     data.image,
     data.description,
     moment().format(),

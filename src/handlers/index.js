@@ -307,7 +307,7 @@ async function getQuestion(event) {
   try {
     if (id) {
       let question = await _get("questions", "id", id);
-      let answer = await _get("answers", "question_id", id);
+      let answers = await _get("answers", "question_id", id);
 
       if (question.length === 0) {
         return wrapResponse(null, 400, {
@@ -315,7 +315,7 @@ async function getQuestion(event) {
         });
       }
 
-      return wrapResponse({ question: question[0], answer });
+      return wrapResponse({ question: question[0], answers });
     } else {
       let questions = await _get("questions", "user_id", user_id);
       let answers = await _get("answers", "user_id", user_id);
