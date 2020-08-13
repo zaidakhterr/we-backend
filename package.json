@@ -23,6 +23,7 @@
     "webpack": "^4.35.2"
   },
   "dependencies": {
+    "algoliasearch": "^4.4.0",
     "aws-sdk": "^2.639.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.5.1",
