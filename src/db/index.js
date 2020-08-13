@@ -1,7 +1,7 @@
 const dbConfig = require("../config/db_config");
 const JWTSecret = require("../config").JWT_SECRET;
-// const algoliaApplicationId = require("../config").ALGOLIA_APPLICATION_ID;
-// const AlgoliaAdminApiKey = require("../config").ALGOLIA_ADMIN_API_KEY;
+const algoliaApplicationId = require("../config").ALGOLIA_APPLICATION_ID;
+const algoliaAdminApiKey = require("../config").ALGOLIA_ADMIN_API_KEY;
 
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3({ signatureVersion: "v4" });
@@ -11,14 +11,10 @@ const bcrypt = require("bcryptjs");
 
 const db = require("serverless-mysql")({ config: dbConfig });
 
-// const algoliasearch = require("algoliasearch");
-// const client = algoliasearch(algoliaApplicationId, AlgoliaAdminApiKey);
-// const questionsIndex = client.initIndex("Questions");
-
 // For the default version
 const algoliasearch = require("algoliasearch");
 
-const client = algoliasearch("YSEWN881LL", "3d68d15bed0617f68af0337ffcf27207");
+const client = algoliasearch(algoliaApplicationId, algoliaAdminApiKey);
 const index = client.initIndex("Questions");
 
 // Wrap the result of all handlers with this function
