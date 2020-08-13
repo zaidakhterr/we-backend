@@ -103,7 +103,6 @@ All fields are nessecary here. Pass new(updated) value in field that is to be up
 ```json
 {
   "fullname": "[full_name]",
-  "email": "[email_address]",
   "description": "[description]",
   "image": "[image_url]"
 }
