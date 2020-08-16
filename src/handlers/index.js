@@ -307,13 +307,24 @@ async function getQuestion(event) {
   try {
     if (id) {
       let question = await _get("questions", "id", id);
-      let user = await _get("users", "id", question[0].user_id);
-      let answers = await _get("answers", "question_id", id);
 
       if (question.length === 0) {
         return wrapResponse(null, 400, {
           message: "Not Found. Question does not exist.",
         });
+      }
+
+      let user = await _get("users", "id", question[0].user_id);
+
+      let answers = await _get("answers", "question_id", id);
+
+      for (let i = 0; i < answers.length; i++) {
+        let answerUser = await _get("users", "id", answers[i].user_id);
+        if (answerUser.length === 0) {
+          answers[i] = null;
+        } else {
+          answers[i] = { ...answers[i], user: { ...answerUser[0] } };
+        }
       }
 
       return wrapResponse({
