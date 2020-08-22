@@ -1,3 +1,5 @@
+[![GitHub license](https://img.shields.io/github/license/zaidakhterr/we-backend)](https://github.com/zaidakhterr/we-backend/blob/master/LICENSE)
+
 # WE-BACKEND
 
 Backend for the we-project (aka. NEDian's Forum)
