@@ -27,7 +27,7 @@
     "aws-sdk": "^2.639.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "serverless-mysql": "^1.5.4"
   },
   "bugs": {
